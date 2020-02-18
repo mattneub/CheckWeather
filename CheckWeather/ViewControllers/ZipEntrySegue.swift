@@ -99,7 +99,7 @@ fileprivate final class ZipEntryPresentationController : UIPresentationControlle
     override var frameOfPresentedViewInContainerView : CGRect {
         let v = self.presentedView!
         let con = self.containerView!
-        v.center = CGPoint(x:con.bounds.width/2, y:100)
+        v.center = CGPoint(x:con.bounds.width/2, y:150)
         return v.frame.integral
     }
     
