@@ -1,23 +1,32 @@
 
 
 import UIKit
+import Combine
 
-// communication back to MasterViewController is by notification
-// I tend to put notification names in the file containing the class that "vends" them
-// could alternatively make this a static property of the class itself (nicer namespacing)
-extension Notification.Name {
-    static let zipCodeDidChange = Notification.Name("zipCodeDidChange")
-}
-
-final class ZipEntryViewController: UIViewController, UITextFieldDelegate {
-    @IBOutlet weak var textField: UITextField!
+final class ZipEntryViewController: UIViewController {
+    @IBOutlet weak var textField: ZipEntryTextField!
     @IBOutlet weak var OKButton: UIButton!
+    
+    var coordinator = ZipEntryCoordinator()
+    
+    var pipelineStorage = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.OKButton.isEnabled = false
-        self.view.layer.borderWidth = 2
-        self.view.layer.cornerRadius = 3
+        self.preparePipelines()
+    }
+    
+    // called once as part of `viewDidLoad`, get ready to face user
+    private func preparePipelines() {
+        // five-digit-hood of text field flows directly into enablement of OK button
+        self.textField.$hasFiveDigits
+            .assign(to: \.isEnabled, on: self.OKButton)
+            .store(in: &self.pipelineStorage)
+        // signal that user has hit Return in text field, forward to coordinator
+        self.textField.userHitReturn
+            .sink {self.coordinator.weveGotAZipCode($0, in: self)}
+            .store(in: &self.pipelineStorage)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -25,46 +34,15 @@ final class ZipEntryViewController: UIViewController, UITextFieldDelegate {
         self.textField.becomeFirstResponder() // ready for text entry
     }
     
-    // digits only please
-    func textField(_ textField: UITextField,
-        shouldChangeCharactersIn range: NSRange,
-        replacementString string: String) -> Bool
-    {
-        if string.isEmpty { // backspace
-            return true
-        }
-        let isNumber = string.allSatisfy {
-            "01234567890".contains($0)
-        }
-        return isNumber
-    }
-    
-    // five digits please
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-        self.OKButton.isEnabled = textField.text!.count == 5
-    }
-    
-    // external keyboard return key
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if self.OKButton.isEnabled {
-            self.doOK(self)
-        }
-        return false
-    }
-    
+    // user cancelled, forward to coordinator
     @IBAction func doCancel(_ sender: Any) {
-        self.dismiss(animated: true)
+        self.coordinator.userCancelled(self)
     }
-    
+        
+    // user tapped OK, forward to coordinator
     @IBAction func doOK(_ sender: Any) {
-        self.dismiss(animated: true) {
-            NotificationCenter.default.post(
-                name: .zipCodeDidChange,
-                object: self,
-                userInfo: ["zip":self.textField.text!]
-            )
-        }
+        self.coordinator.weveGotAZipCode(self.textField.text!, in: self)
     }
-    
+
 }
 

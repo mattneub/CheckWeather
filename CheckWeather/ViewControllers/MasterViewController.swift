@@ -51,7 +51,7 @@ final class MasterViewController: UIViewController {
         
         // COOL FEATURE: new in iOS 13, let's use Combine framework!
         // set up pipeline for receiving change of zip via notification
-        NotificationCenter.default.publisher(for: .zipCodeDidChange)
+        NotificationCenter.default.publisher(for: ZipEntryCoordinator.zipCodeDidChange)
             .compactMap { $0.userInfo?["zip"] as? String }
             .assign(to: \.currentZip, on: self)
             .store(in:&storage)

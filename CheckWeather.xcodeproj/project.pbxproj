@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8101F32F23FC37C3004F0CC2 /* JSONTalkerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8101F32E23FC37C3004F0CC2 /* JSONTalkerTests.swift */; };
+		8106A10E242A761200656795 /* ZipEntryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8106A10D242A761200656795 /* ZipEntryViews.swift */; };
+		8106A110242A8D6000656795 /* ZipEntryCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8106A10F242A8D6000656795 /* ZipEntryCoordinator.swift */; };
 		8119A819234E547E00C49362 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8119A818234E547E00C49362 /* AppDelegate.swift */; };
 		8119A81B234E547E00C49362 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8119A81A234E547E00C49362 /* SceneDelegate.swift */; };
 		8119A81D234E547E00C49362 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8119A81C234E547E00C49362 /* MasterViewController.swift */; };
@@ -65,6 +67,8 @@
 
 /* Begin PBXFileReference section */
 		8101F32E23FC37C3004F0CC2 /* JSONTalkerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONTalkerTests.swift; sourceTree = "<group>"; };
+		8106A10D242A761200656795 /* ZipEntryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipEntryViews.swift; sourceTree = "<group>"; };
+		8106A10F242A8D6000656795 /* ZipEntryCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipEntryCoordinator.swift; sourceTree = "<group>"; };
 		8119A815234E547E00C49362 /* CheckWeather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheckWeather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8119A818234E547E00C49362 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8119A81A234E547E00C49362 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -134,6 +138,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8106A111242A91DB00656795 /* ZipEntry */ = {
+			isa = PBXGroup;
+			children = (
+				81B5B3C523F863DE00485117 /* ZipEntryViewController.swift */,
+				8106A10F242A8D6000656795 /* ZipEntryCoordinator.swift */,
+				8106A10D242A761200656795 /* ZipEntryViews.swift */,
+				8164467B23FA09E600A27FA0 /* ZipEntrySegue.swift */,
+			);
+			name = ZipEntry;
+			sourceTree = "<group>";
+		};
 		8119A80C234E547E00C49362 = {
 			isa = PBXGroup;
 			children = (
@@ -233,8 +248,7 @@
 				8119A81C234E547E00C49362 /* MasterViewController.swift */,
 				81DF7E3E23F9B9110015EA88 /* MasterViewTableDataSource.swift */,
 				814FB71D234F61C200C56CAF /* DetailViewController.swift */,
-				81B5B3C523F863DE00485117 /* ZipEntryViewController.swift */,
-				8164467B23FA09E600A27FA0 /* ZipEntrySegue.swift */,
+				8106A111242A91DB00656795 /* ZipEntry */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -405,6 +419,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8119A81D234E547E00C49362 /* MasterViewController.swift in Sources */,
+				8106A110242A8D6000656795 /* ZipEntryCoordinator.swift in Sources */,
+				8106A10E242A761200656795 /* ZipEntryViews.swift in Sources */,
 				8119A82D234E5DC000C49362 /* Forecast.swift in Sources */,
 				81DF7E3F23F9B9110015EA88 /* MasterViewTableDataSource.swift in Sources */,
 				8164467C23FA09E600A27FA0 /* ZipEntrySegue.swift in Sources */,
