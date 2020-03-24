@@ -1,15 +1,12 @@
 
 
 import UIKit
+import Combine
 
 final class DetailViewController : UIViewController {
-    private let formatters : MyDateFormatters
-    private let prediction : Prediction
-    private let city : City
+    private let data : DetailViewData
     init?(prediction:Prediction, city:City, formatters:MyDateFormatters, coder:NSCoder) {
-        self.prediction = prediction
-        self.city = city
-        self.formatters = formatters
+        self.data = DetailViewData(prediction:prediction, city:city, formatters:formatters)
         super.init(coder:coder)
     }
     // _must_ call preceding initializer
@@ -30,23 +27,37 @@ final class DetailViewController : UIViewController {
     @IBOutlet private weak var clouds: UILabel!
     @IBOutlet private weak var rainOrSnow: UILabel!
     
+    var pipelineStorage = Set<AnyCancellable>()
     override func viewDidLoad() {
         super.viewDidLoad()
-        // populate ourselves directly from the City and Prediction
-        self.navigationItem.title = self.city.name
-        let start = self.formatters.wordyDateTimeFormatter.string(from: self.prediction.date)
-        self.date.text = start
-        self.temp.text = self.prediction.tempFormatted
-        self.feels.text = self.prediction.tempFeelsLikeFormatted
-        self.pressure.text = self.prediction.pressureFormatted
-        self.humidity.text = self.prediction.humidityFormatted
-        self.speed.text = self.prediction.wind.speedFormatted
-        self.deg.text = self.prediction.wind.compassPoint
-        self.clouds.text = self.prediction.cloudCoverFormatted
-        self.rainOrSnow.text = self.prediction.precipFormatted
-        self.main.text = self.prediction.weather?.generalDescription
-        self.desc.text = self.prediction.weather?.secondaryDescription
-        self.icon.image = self.prediction.weather?.image
+        // configure bindings from published properties of detail view data to our interface
+        // hold my beer and watch _this_
+        typealias StringPub = Published<String>.Publisher
+        typealias OptStringPath = ReferenceWritableKeyPath<DetailViewController, String?>
+        typealias MyTuple = (StringPub, OptStringPath)
+        let pairs : [MyTuple] = [
+        (self.data.$cityName, \DetailViewController.navigationItem.title),
+        (self.data.$date, \DetailViewController.date.text),
+        (self.data.$temp, \DetailViewController.temp.text),
+        (self.data.$feels, \DetailViewController.feels.text),
+        (self.data.$pressure, \DetailViewController.pressure.text),
+        (self.data.$humidity, \DetailViewController.humidity.text),
+        (self.data.$speed, \DetailViewController.speed.text),
+        (self.data.$deg, \DetailViewController.deg.text),
+        (self.data.$clouds, \DetailViewController.clouds.text),
+        (self.data.$rainOrSnow, \DetailViewController.rainOrSnow.text),
+        (self.data.$main, \DetailViewController.main.text),
+        (self.data.$desc, \DetailViewController.desc.text),
+        ]
+        for (binding,path) in pairs {
+            let pub : AnyPublisher<String?,Never> = binding.compactMap {$0}.eraseToAnyPublisher()
+            let assign = Subscribers.Assign<DetailViewController,String?>(object: self, keyPath: path)
+            pub.subscribe(assign)
+            assign.store(in: &self.pipelineStorage)
+        }
+        self.data.$icon // odd man out, it's an image
+            .assign(to: \.icon.image, on: self)
+            .store(in:&self.pipelineStorage)
     }
     
     

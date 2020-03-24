@@ -7,7 +7,7 @@ final class ZipEntryViewController: UIViewController {
     @IBOutlet weak var textField: ZipEntryTextField!
     @IBOutlet weak var OKButton: UIButton!
     
-    var coordinator = ZipEntryCoordinator()
+    let coordinator = ZipEntryCoordinator()
     
     var pipelineStorage = Set<AnyCancellable>()
     
