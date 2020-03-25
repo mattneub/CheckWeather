@@ -7,26 +7,21 @@ final class ZipEntryViewController: UIViewController {
     @IBOutlet weak var textField: ZipEntryTextField!
     @IBOutlet weak var OKButton: UIButton!
     
-    let coordinator = ZipEntryCoordinator()
+    var processor : ZipEntryProcessor?
     
     var pipelineStorage = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.OKButton.isEnabled = false
-        self.preparePipelines()
-    }
-    
-    // called once as part of `viewDidLoad`, get ready to face user
-    private func preparePipelines() {
-        // five-digit-hood of text field flows directly into enablement of OK button
-        self.textField.$hasFiveDigits
-            .assign(to: \.isEnabled, on: self.OKButton)
-            .store(in: &self.pipelineStorage)
-        // signal that user has hit Return in text field, forward to coordinator
-        self.textField.userHitReturn
-            .sink {self.coordinator.weveGotAZipCode($0, in: self)}
-            .store(in: &self.pipelineStorage)
+        // create processor and give it a coordinator
+        let coordinator = ZipEntryCoordinator(viewController: self)
+        self.processor = ZipEntryProcessor(coordinator: coordinator)
+        // processor listens to text field and to our button signals
+        self.processor?.preparePipeline(fromTextField: self.textField, viewController:self)
+        // we listen to processor for validity of current zip, pipe to button enablement
+        self.processor?.$validZip
+            .sink {[unowned self] in self.OKButton.isEnabled = $0}
+            .store(in: &pipelineStorage)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -34,15 +29,17 @@ final class ZipEntryViewController: UIViewController {
         self.textField.becomeFirstResponder() // ready for text entry
     }
     
-    // user cancelled, forward to coordinator
+    // button methods poke subjects
+    let userCancelled = PassthroughSubject<Bool,Never>()
     @IBAction func doCancel(_ sender: Any) {
-        self.coordinator.userCancelled(self)
+        self.userCancelled.send(true)
     }
-        
-    // user tapped OK, forward to coordinator
+    let proposedZipCode = PassthroughSubject<String,Never>()
     @IBAction func doOK(_ sender: Any) {
-        self.coordinator.weveGotAZipCode(self.textField.text!, in: self)
+        self.proposedZipCode.send(self.textField.text!)
     }
+
+    deinit { print("farewell", self) }
 
 }
 

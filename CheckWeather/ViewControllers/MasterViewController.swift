@@ -51,9 +51,9 @@ final class MasterViewController: UIViewController {
         
         // COOL FEATURE: new in iOS 13, let's use Combine framework!
         // set up pipeline for receiving change of zip via notification
-        NotificationCenter.default.publisher(for: ZipEntryCoordinator.zipCodeDidChange)
+        NotificationCenter.default.publisher(for: ZipEntryProcessor.zipCodeDidChange)
             .compactMap { $0.userInfo?["zip"] as? String }
-            .assign(to: \.currentZip, on: self)
+            .sink { [unowned self] in self.currentZip = $0 }
             .store(in:&storage)
         
         // try to get data from defaults
@@ -184,10 +184,9 @@ final class MasterViewController: UIViewController {
         let snap = self.datasource.snapshot()
         let section = snap.sectionIdentifiers[ip.section]
         let prediction = snap.itemIdentifiers(inSection: section)[ip.row]
+        let data = DetailViewData(prediction: prediction, city: forecast.city, formatters: forecast.formatters)
         return DetailViewController(
-            prediction: prediction,
-            city: forecast.city,
-            formatters: forecast.formatters,
+            data: data,
             coder: coder)
     }
 }

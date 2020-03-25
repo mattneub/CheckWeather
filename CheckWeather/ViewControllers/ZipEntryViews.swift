@@ -22,6 +22,9 @@ class ZipEntryView: UIView {
         self.layer.borderWidth = 2
         self.layer.cornerRadius = 3
     }
+    
+    deinit { print("farewell", self) }
+
 
 }
 
@@ -42,12 +45,11 @@ class ZipEntryTextField : UITextField, UITextFieldDelegate {
     
     // COOL FEATURE: use Combine framework publishers to let client (view controller) hear what's happened
     // hasFiveDigits always tracks the five-digit-hood of this text field
+    // userHitReturn is signal that user used keyboard to signal completion
+    
     @Published var hasFiveDigits = false
-    // userHitReturn is the signal that the user finished by using keyboard
     let userHitReturn = PassthroughSubject<String,Never>()
-    
-    // okay, here's the functionality!
-    
+        
     // digits only, please
     func textField(_ textField: UITextField,
         shouldChangeCharactersIn range: NSRange,
@@ -75,4 +77,6 @@ class ZipEntryTextField : UITextField, UITextFieldDelegate {
         return false
     }
     
+    deinit { print("farewell", self) }
+
 }

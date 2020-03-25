@@ -1,37 +1,27 @@
 
 
 import UIKit
+import Combine
 
-// mild coordinator for ZipEntryViewController
-// our job is to know that this is a presented view controller
-// and to send info back on dismissal
+// coordinator navigates
+// listen to processor and dismiss v.c. when it declares termination
 
 class ZipEntryCoordinator: NSObject {
     
-    func userCancelled(_ vc:UIViewController) {
-        vc.dismiss(animated: true)
+    unowned let vc : ZipEntryViewController
+    init(viewController:ZipEntryViewController) {
+        self.vc = viewController
     }
     
-    func weveGotAZipCode(_ zip:String, in vc:UIViewController) {
-        self.dismissAndAnnounceNewZipCode(zip, in:vc)
+    var pipelineStorage = Set<AnyCancellable>()
+    
+    func preparePipeline(_ processor:ZipEntryProcessor) {
+        processor.finished
+            .filter {$0}
+            .sink { [unowned self] _ in self.vc.dismiss(animated:true) }
+            .store(in: &self.pipelineStorage)
     }
     
-    private func dismissAndAnnounceNewZipCode(_ zip:String, in vc:UIViewController) {
-        vc.dismiss(animated: true) {
-            self.announceNewZipCode(zip)
-        }
-    }
-    
-    // communication (back to MasterViewController) is by notification
-    // make this a static property (nice namespacing)
-    
-    static let zipCodeDidChange = Notification.Name("zipCodeDidChange")
-    private func announceNewZipCode(_ zip:String) {
-        NotificationCenter.default.post(
-            name: Self.zipCodeDidChange,
-            object: self,
-            userInfo: ["zip":zip]
-        )
-    }
-
+    deinit { print("farewell", self) }
+            
 }

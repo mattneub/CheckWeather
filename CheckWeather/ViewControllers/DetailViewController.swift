@@ -5,8 +5,8 @@ import Combine
 
 final class DetailViewController : UIViewController {
     private let data : DetailViewData
-    init?(prediction:Prediction, city:City, formatters:MyDateFormatters, coder:NSCoder) {
-        self.data = DetailViewData(prediction:prediction, city:city, formatters:formatters)
+    init?(data:DetailViewData, coder:NSCoder) {
+        self.data = data
         super.init(coder:coder)
     }
     // _must_ call preceding initializer
@@ -31,34 +31,38 @@ final class DetailViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // configure bindings from published properties of detail view data to our interface
-        // hold my beer and watch _this_
-        typealias StringPub = Published<String>.Publisher
+        // hold my beer and watch _this!_
+        // we pair the bindings with the display properties and loop over them to form the subscriptions
+        typealias StringPub = Published<String?>.Publisher
         typealias OptStringPath = ReferenceWritableKeyPath<DetailViewController, String?>
         typealias MyTuple = (StringPub, OptStringPath)
         let pairs : [MyTuple] = [
-        (self.data.$cityName, \DetailViewController.navigationItem.title),
-        (self.data.$date, \DetailViewController.date.text),
-        (self.data.$temp, \DetailViewController.temp.text),
-        (self.data.$feels, \DetailViewController.feels.text),
-        (self.data.$pressure, \DetailViewController.pressure.text),
-        (self.data.$humidity, \DetailViewController.humidity.text),
-        (self.data.$speed, \DetailViewController.speed.text),
-        (self.data.$deg, \DetailViewController.deg.text),
-        (self.data.$clouds, \DetailViewController.clouds.text),
-        (self.data.$rainOrSnow, \DetailViewController.rainOrSnow.text),
-        (self.data.$main, \DetailViewController.main.text),
-        (self.data.$desc, \DetailViewController.desc.text),
+            (self.data.$cityName, \DetailViewController.navigationItem.title),
+            (self.data.$date, \DetailViewController.date.text),
+            (self.data.$temp, \DetailViewController.temp.text),
+            (self.data.$feels, \DetailViewController.feels.text),
+            (self.data.$pressure, \DetailViewController.pressure.text),
+            (self.data.$humidity, \DetailViewController.humidity.text),
+            (self.data.$speed, \DetailViewController.speed.text),
+            (self.data.$deg, \DetailViewController.deg.text),
+            (self.data.$clouds, \DetailViewController.clouds.text),
+            (self.data.$rainOrSnow, \DetailViewController.rainOrSnow.text),
+            (self.data.$main, \DetailViewController.main.text),
+            (self.data.$desc, \DetailViewController.desc.text),
         ]
-        for (binding,path) in pairs {
-            let pub : AnyPublisher<String?,Never> = binding.compactMap {$0}.eraseToAnyPublisher()
-            let assign = Subscribers.Assign<DetailViewController,String?>(object: self, keyPath: path)
-            pub.subscribe(assign)
-            assign.store(in: &self.pipelineStorage)
+        // (we don't really need `.store` for these onetime assignments,
+        //  but it's good on principle)
+        for (binding, path) in pairs {
+            binding
+                .sink { [unowned self] in self[keyPath:path] = $0 }
+                .store(in: &self.pipelineStorage)
         }
-        self.data.$icon // odd man out, it's an image
-            .assign(to: \.icon.image, on: self)
+        self.data.$icon
+            .sink { [unowned self] in self.icon.image = $0 }
             .store(in:&self.pipelineStorage)
     }
+    
+    deinit { print("farewell", self) }
     
     
 }
