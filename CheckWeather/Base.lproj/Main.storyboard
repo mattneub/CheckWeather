@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="i6B-sV-b4o">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="i6B-sV-b4o">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,14 +20,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="5OB-1i-ARk" customClass="PredictionCell" customModule="CheckWeather" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="81.5"/>
+                                        <rect key="frame" x="0.0" y="28" width="414" height="81"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5OB-1i-ARk" id="QOK-GW-2Mk">
-                                            <rect key="frame" x="0.0" y="0.0" width="383" height="81.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="81"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7BT-FD-whc">
-                                                    <rect key="frame" x="20" y="11" width="50" height="21.5"/>
+                                                    <rect key="frame" x="20" y="11" width="50" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="raK-pY-Bak"/>
                                                     </constraints>
@@ -36,7 +36,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="sun.max" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="zRx-LM-zOG">
-                                                    <rect key="frame" x="20" y="36.5" width="29.5" height="39.5"/>
+                                                    <rect key="frame" x="20" y="36" width="29.5" height="39.5"/>
                                                     <color key="tintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="10" id="DtC-SJ-kDK"/>
@@ -45,7 +45,7 @@
                                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="24"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KCk-tp-8Pe">
-                                                    <rect key="frame" x="57.5" y="41.5" width="100" height="29"/>
+                                                    <rect key="frame" x="57.5" y="41" width="100" height="29"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="cRi-LA-yHq"/>
                                                     </constraints>
@@ -63,7 +63,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CGM-2E-25a">
-                                                    <rect key="frame" x="325" y="48.5" width="50" height="21"/>
+                                                    <rect key="frame" x="325" y="48" width="50" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="OVA-xd-cPT"/>
                                                     </constraints>
@@ -387,17 +387,11 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4p2-cU-kfh">
                                 <rect key="frame" x="16" y="100" width="48" height="30"/>
                                 <state key="normal" title="Cancel"/>
-                                <connections>
-                                    <action selector="doCancel:" destination="UjL-Pz-iVN" eventType="touchUpInside" id="T7T-bX-KHX"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lvp-Ya-f55">
                                 <rect key="frame" x="191" y="100" width="33" height="30"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="   OK"/>
-                                <connections>
-                                    <action selector="doOK:" destination="UjL-Pz-iVN" eventType="touchUpInside" id="NZ4-CQ-7Aq"/>
-                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -417,7 +411,8 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="240" height="150"/>
                     <connections>
-                        <outlet property="OKButton" destination="lvp-Ya-f55" id="kOB-hL-bZL"/>
+                        <outlet property="cancelButton" destination="4p2-cU-kfh" id="c9n-yn-eBz"/>
+                        <outlet property="okButton" destination="lvp-Ya-f55" id="kOB-hL-bZL"/>
                         <outlet property="textField" destination="5wP-UD-ZTL" id="382-Bo-yWf"/>
                     </connections>
                 </viewController>
@@ -445,7 +440,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="square.and.pencil" catalog="system" width="64" height="58"/>
-        <image name="sun.max" catalog="system" width="64" height="62"/>
+        <image name="square.and.pencil" catalog="system" width="128" height="118"/>
+        <image name="sun.max" catalog="system" width="128" height="124"/>
     </resources>
 </document>

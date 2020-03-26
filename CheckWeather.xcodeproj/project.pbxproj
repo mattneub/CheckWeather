@@ -48,6 +48,7 @@
 		81B5B3C623F863DE00485117 /* ZipEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B5B3C523F863DE00485117 /* ZipEntryViewController.swift */; };
 		81B5B3CC23F8875A00485117 /* JSONData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B5B3CB23F8875A00485117 /* JSONData.swift */; };
 		81DF7E3F23F9B9110015EA88 /* MasterViewTableDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81DF7E3E23F9B9110015EA88 /* MasterViewTableDataSource.swift */; };
+		81F4D7BA242D60AA0078B7B9 /* UIControl+Publisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81F4D7B9242D60AA0078B7B9 /* UIControl+Publisher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +116,7 @@
 		81B5B3C523F863DE00485117 /* ZipEntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipEntryViewController.swift; sourceTree = "<group>"; };
 		81B5B3CB23F8875A00485117 /* JSONData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONData.swift; sourceTree = "<group>"; };
 		81DF7E3E23F9B9110015EA88 /* MasterViewTableDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewTableDataSource.swift; sourceTree = "<group>"; };
+		81F4D7B9242D60AA0078B7B9 /* UIControl+Publisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+Publisher.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -271,6 +273,7 @@
 			isa = PBXGroup;
 			children = (
 				814FB71B234F5C8000C56CAF /* UtilityViews.swift */,
+				81F4D7B9242D60AA0078B7B9 /* UIControl+Publisher.swift */,
 			);
 			path = UtilityViews;
 			sourceTree = "<group>";
@@ -444,6 +447,7 @@
 				81B5B3C623F863DE00485117 /* ZipEntryViewController.swift in Sources */,
 				814FB71C234F5C8000C56CAF /* UtilityViews.swift in Sources */,
 				8119A819234E547E00C49362 /* AppDelegate.swift in Sources */,
+				81F4D7BA242D60AA0078B7B9 /* UIControl+Publisher.swift in Sources */,
 				8119A81B234E547E00C49362 /* SceneDelegate.swift in Sources */,
 				814FB71E234F61C200C56CAF /* DetailViewController.swift in Sources */,
 				81B5B3CC23F8875A00485117 /* JSONData.swift in Sources */,

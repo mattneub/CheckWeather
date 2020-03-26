@@ -3,46 +3,57 @@
 import UIKit
 import Combine
 
-// processor is the business logic
-// listen for signals from interface (some are direct, some come from view controller)
-// emit signals for validity of user entry, termination of scene, final zip code value
+extension Character {
+    var isDigit : Bool {
+        Set(Array("1234567890")).contains(self)
+    }
+}
 
+/// Business logic for zip entry.
+/// Listen for signal from interface.
+/// Signal validity of user entry, termination of scene, final zip code value.
 class ZipEntryProcessor: NSObject {
-    
+    static let zipCodeDidChange = Notification.Name("zipCodeDidChange")
+
     let coordinator : ZipEntryCoordinator
     
-    init(coordinator: ZipEntryCoordinator) {
-        self.coordinator = coordinator
-        super.init()
-        self.coordinator.preparePipeline(self)
-    }
-    
-    @Published var validZip = false
-    let finished = PassthroughSubject<Bool,Never>()
+    // signals
+    @Published var validZip = false // for interface
+    let finished = PassthroughSubject<Bool,Never>() // for coordinator
         
     var pipelineStorage = Set<AnyCancellable>()
     
-    func preparePipeline(fromTextField tf:ZipEntryTextField, viewController vc:ZipEntryViewController) {
-        tf.$hasFiveDigits
-            .sink {[unowned self] in self.validZip = $0}
-            .store(in: &self.pipelineStorage)
-        tf.userHitReturn
-            .sink {[unowned self] in self.gotNewZipCode($0)}
-            .store(in: &self.pipelineStorage)
-        vc.userCancelled
-            .sink {[unowned self] _ in self.finished.send(true)}
-            .store(in: &self.pipelineStorage)
-        vc.proposedZipCode
-            .sink {[unowned self] in self.gotNewZipCode($0)}
+    init(coordinator: ZipEntryCoordinator, viewController vc:ZipEntryViewController) {
+        // retain coordinator just so it doesn't go out of existence
+        self.coordinator = coordinator
+        super.init()
+        // coordinator will listn to us
+        self.coordinator.preparePipeline(self)
+        // we listen to view controller for events describing what interface did
+        vc.interfaceEvent
+            .sink {[unowned self] in self.interpretInterfaceEvent($0)}
             .store(in: &self.pipelineStorage)
     }
     
-    private func gotNewZipCode(_ zip:String) {
-        self.announceNewZipCode(zip)
-        self.finished.send(true)
+    private func interpretInterfaceEvent(_ event:ZipEntryViewController.ZipEntryInterfaceEvent) {
+        switch event {
+        case .userCancelled:
+            self.finished.send(true)
+        case .userChangedZip(let zip):
+            self.validZip = self.isValid(zip)
+        case .userFinishedZip(let zip):
+            self.announceNewZipCode(zip)
+            self.finished.send(true)
+        }
     }
     
-    static let zipCodeDidChange = Notification.Name("zipCodeDidChange")
+    private func isValid(_ zip:String) -> Bool {
+        guard zip.count == 5 else { return false }
+        guard zip.allSatisfy(\.isDigit) else { return false }
+        return true
+    }
+    
+    // we have a zip code! tell the world
     private func announceNewZipCode(_ zip:String) {
         NotificationCenter.default.post(
             name: Self.zipCodeDidChange,

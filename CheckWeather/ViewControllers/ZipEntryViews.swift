@@ -4,36 +4,32 @@ import Combine
 
 // views associated with ZipEntryViewController
 
-// overall view for ZipEntryViewController, nice look with rounded border
 
+/// Background view with nice rounded border
 class ZipEntryView: UIView {
-
     override init(frame: CGRect) {
         super.init(frame:frame)
         self.initiallyConfigure()
     }
-    
     required init?(coder: NSCoder) {
         super.init(coder:coder)
         self.initiallyConfigure()
     }
-    
     private func initiallyConfigure() {
         self.layer.borderWidth = 2
         self.layer.cornerRadius = 3
     }
-    
+    // debugging memory management
     deinit { print("farewell", self) }
-
-
 }
 
-// text field for ZipEntryViewController, can only enter numbers
-
+/// Text field for zip entry, can only enter numbers
 class ZipEntryTextField : UITextField, UITextFieldDelegate {
     
-    // I am my own delegate (always something a little weird-feeling about this)
-    
+    let userHitReturn = PassthroughSubject<String,Never>()
+    let userChangedText = PassthroughSubject<String,Never>()
+        
+    // I am my own delegate
     override init(frame: CGRect) {
         super.init(frame:frame)
         self.delegate = self
@@ -43,13 +39,6 @@ class ZipEntryTextField : UITextField, UITextFieldDelegate {
         self.delegate = self
     }
     
-    // COOL FEATURE: use Combine framework publishers to let client (view controller) hear what's happened
-    // hasFiveDigits always tracks the five-digit-hood of this text field
-    // userHitReturn is signal that user used keyboard to signal completion
-    
-    @Published var hasFiveDigits = false
-    let userHitReturn = PassthroughSubject<String,Never>()
-        
     // digits only, please
     func textField(_ textField: UITextField,
         shouldChangeCharactersIn range: NSRange,
@@ -64,16 +53,14 @@ class ZipEntryTextField : UITextField, UITextFieldDelegate {
         return isNumber
     }
     
-    // _five_ digits, please
+    // publish change of text
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        self.hasFiveDigits = self.text!.count == 5
+        self.userChangedText.send(self.text!)
     }
     
-    // external keyboard return key
+    // external keyboard return key, publish change of text, keyboard dismisses
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if self.hasFiveDigits {
-            self.userHitReturn.send(self.text!)
-        }
+        self.userHitReturn.send(self.text!)
         return false
     }
     

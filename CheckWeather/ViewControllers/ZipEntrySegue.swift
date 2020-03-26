@@ -1,9 +1,8 @@
 
 import UIKit
 
-// COOL FEATURE: custom transition animation!
+// custom transition animation
 // nicely encapsulated into the _segue_
-// (could actually put this into a different
 
 final class ZipEntrySegue: UIStoryboardSegue {
     override func perform() {

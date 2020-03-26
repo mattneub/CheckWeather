@@ -6,9 +6,11 @@
 import UIKit
 
 class DetailViewData: NSObject {
+    
     private let formatters : MyDateFormatters
     private let prediction : Prediction
     private let city : City
+    
     init(prediction:Prediction, city:City, formatters:MyDateFormatters) {
         self.prediction = prediction
         self.city = city

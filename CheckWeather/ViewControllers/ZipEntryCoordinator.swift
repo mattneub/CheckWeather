@@ -3,13 +3,11 @@
 import UIKit
 import Combine
 
-// coordinator navigates
-// listen to processor and dismiss v.c. when it declares termination
-
+/// Coordinator for zip entry, just navigates: listen to processor and dismiss v.c. when it declares termination
 class ZipEntryCoordinator: NSObject {
     
-    unowned let vc : ZipEntryViewController
-    init(viewController:ZipEntryViewController) {
+    unowned let vc : UIViewController
+    init(viewController:UIViewController) {
         self.vc = viewController
     }
     

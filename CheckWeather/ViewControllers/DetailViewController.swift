@@ -4,15 +4,6 @@ import UIKit
 import Combine
 
 final class DetailViewController : UIViewController {
-    private let data : DetailViewData
-    init?(data:DetailViewData, coder:NSCoder) {
-        self.data = data
-        super.init(coder:coder)
-    }
-    // _must_ call preceding initializer
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     @IBOutlet private weak var date: UILabel!
     @IBOutlet private weak var temp: UILabel!
@@ -28,6 +19,18 @@ final class DetailViewController : UIViewController {
     @IBOutlet private weak var rainOrSnow: UILabel!
     
     var pipelineStorage = Set<AnyCancellable>()
+    
+    private let data : DetailViewData
+    
+    init?(data:DetailViewData, coder:NSCoder) {
+        self.data = data
+        super.init(coder:coder)
+    }
+    // oh no you don't, _must_ call preceding initializer
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // configure bindings from published properties of detail view data to our interface
@@ -35,8 +38,8 @@ final class DetailViewController : UIViewController {
         // we pair the bindings with the display properties and loop over them to form the subscriptions
         typealias StringPub = Published<String?>.Publisher
         typealias OptStringPath = ReferenceWritableKeyPath<DetailViewController, String?>
-        typealias MyTuple = (StringPub, OptStringPath)
-        let pairs : [MyTuple] = [
+        typealias PublisherPathPair = (StringPub, OptStringPath)
+        let pairs : [PublisherPathPair] = [
             (self.data.$cityName, \DetailViewController.navigationItem.title),
             (self.data.$date, \DetailViewController.date.text),
             (self.data.$temp, \DetailViewController.temp.text),
