@@ -6,7 +6,7 @@ import Combine
 final class ZipEntryViewController: UIViewController {
     enum ZipEntryInterfaceEvent {
         case userChangedZip(String)
-        case userFinishedZip(String)
+        case userSubmittedZip(String)
         case userCancelled
     }
 
@@ -15,7 +15,7 @@ final class ZipEntryViewController: UIViewController {
     @IBOutlet weak var cancelButton: UIButton!
     
     var processor : ZipEntryProcessor?
-    var pipelineStorage = Set<AnyCancellable>()
+    var storage = Set<AnyCancellable>()
     
     // signal that something happened in interface
     let interfaceEvent = PassthroughSubject<ZipEntryInterfaceEvent,Never>()
@@ -28,22 +28,26 @@ final class ZipEntryViewController: UIViewController {
         // processor will listen to our button signals
         self.processor = ZipEntryProcessor(coordinator: coordinator, viewController: self)
         // we listen to interface and signal changes for processor
-        self.textField.userChangedText
-            .sink {[unowned self] in self.interfaceEvent.send(.userChangedZip($0))}
-            .store(in: &self.pipelineStorage)
-        self.textField.userHitReturn
-            .sink {[unowned self] in self.interfaceEvent.send(.userFinishedZip($0))}
-            .store(in: &self.pipelineStorage)
+        self.textField.publisher(for: .editingChanged)
+            .map { .userChangedZip(($0 as! UITextField).text!) }
+            .subscribe(self.interfaceEvent)
+            .store(in: &self.storage)
+        self.textField.publisher(for: .editingDidEndOnExit)
+            .map { .userSubmittedZip(($0 as! UITextField).text!) }
+            .subscribe(self.interfaceEvent)
+            .store(in: &self.storage)
         self.okButton.publisher()
-            .sink {[unowned self] _ in self.interfaceEvent.send(.userFinishedZip(self.textField.text!))}
-            .store(in: &self.pipelineStorage)
+            .map { [unowned self] _ in .userSubmittedZip(self.textField.text!) }
+            .subscribe(self.interfaceEvent)
+            .store(in: &self.storage)
         self.cancelButton.publisher()
-            .sink {[unowned self] _ in self.interfaceEvent.send(.userCancelled)}
-            .store(in: &self.pipelineStorage)
-        // we listen to processor for validity of current zip, pipe to button enablement
+            .map { _ in .userCancelled }
+            .subscribe(self.interfaceEvent)
+            .store(in: &self.storage)
+//        // we listen to processor for validity of current zip, pipe to button enablement
         self.processor?.$validZip
             .sink {[unowned self] in self.okButton.isEnabled = $0}
-            .store(in: &pipelineStorage)
+            .store(in: &storage)
     }
     
     override func viewDidAppear(_ animated: Bool) {

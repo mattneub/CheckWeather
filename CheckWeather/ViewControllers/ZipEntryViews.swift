@@ -20,22 +20,22 @@ class ZipEntryView: UIView {
         self.layer.cornerRadius = 3
     }
     // debugging memory management
-    deinit { print("farewell", self) }
+    deinit { print("farewell", type(of:self)) }
 }
 
 /// Text field for zip entry, can only enter numbers
 class ZipEntryTextField : UITextField, UITextFieldDelegate {
-    
-    let userHitReturn = PassthroughSubject<String,Never>()
-    let userChangedText = PassthroughSubject<String,Never>()
-        
+            
     // I am my own delegate
     override init(frame: CGRect) {
         super.init(frame:frame)
-        self.delegate = self
+        self.configure()
     }
     required init?(coder: NSCoder) {
         super.init(coder:coder)
+        self.configure()
+    }
+    private func configure() {
         self.delegate = self
     }
     
@@ -47,23 +47,16 @@ class ZipEntryTextField : UITextField, UITextFieldDelegate {
         if string.isEmpty { // backspace
             return true
         }
+        if string == "\n" { // allow return character
+            return true
+        }
         let isNumber = string.allSatisfy {
             "01234567890".contains($0)
         }
         return isNumber
     }
     
-    // publish change of text
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-        self.userChangedText.send(self.text!)
-    }
     
-    // external keyboard return key, publish change of text, keyboard dismisses
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.userHitReturn.send(self.text!)
-        return false
-    }
-    
-    deinit { print("farewell", self) }
+    deinit { print("farewell", type(of:self)) }
 
 }

@@ -12,7 +12,7 @@ extension Character {
 /// Business logic for zip entry.
 /// Listen for signal from interface.
 /// Signal validity of user entry, termination of scene, final zip code value.
-class ZipEntryProcessor: NSObject {
+final class ZipEntryProcessor: NSObject {
     static let zipCodeDidChange = Notification.Name("zipCodeDidChange")
 
     let coordinator : ZipEntryCoordinator
@@ -21,7 +21,7 @@ class ZipEntryProcessor: NSObject {
     @Published var validZip = false // for interface
     let finished = PassthroughSubject<Bool,Never>() // for coordinator
         
-    var pipelineStorage = Set<AnyCancellable>()
+    var storage = Set<AnyCancellable>()
     
     init(coordinator: ZipEntryCoordinator, viewController vc:ZipEntryViewController) {
         // retain coordinator just so it doesn't go out of existence
@@ -32,7 +32,7 @@ class ZipEntryProcessor: NSObject {
         // we listen to view controller for events describing what interface did
         vc.interfaceEvent
             .sink {[unowned self] in self.interpretInterfaceEvent($0)}
-            .store(in: &self.pipelineStorage)
+            .store(in: &self.storage)
     }
     
     private func interpretInterfaceEvent(_ event:ZipEntryViewController.ZipEntryInterfaceEvent) {
@@ -41,7 +41,7 @@ class ZipEntryProcessor: NSObject {
             self.finished.send(true)
         case .userChangedZip(let zip):
             self.validZip = self.isValid(zip)
-        case .userFinishedZip(let zip):
+        case .userSubmittedZip(let zip):
             self.announceNewZipCode(zip)
             self.finished.send(true)
         }
