@@ -3,18 +3,20 @@
 import UIKit
 import Combine
 
-extension UIControl {
-    func publisher(for event: UIControl.Event = .primaryActionTriggered) -> ControlPublisher {
+protocol ControlWithPublisher : UIControl {}
+extension UIControl : ControlWithPublisher {}
+extension ControlWithPublisher {
+    func publisher(for event: UIControl.Event = .primaryActionTriggered) -> ControlPublisher<Self> {
         ControlPublisher(control:self, for:event)
     }
 }
 
-struct ControlPublisher : Publisher {
-    typealias Output = UIControl
+struct ControlPublisher<T:UIControl> : Publisher {
+    typealias Output = T
     typealias Failure = Never
-    unowned let control : UIControl
+    unowned let control : T
     let event : UIControl.Event
-    init(control:UIControl, for event:UIControl.Event) {
+    init(control:T, for event:UIControl.Event) {
         self.control = control
         self.event = event
     }
@@ -22,10 +24,10 @@ struct ControlPublisher : Publisher {
         subscriber.receive(subscription: Inner(downstream: subscriber, sender: control, event: event))
     }
     class Inner <S:Subscriber>: NSObject, Subscription where S.Input == Output, S.Failure == Failure {
-        weak var sender : UIControl?
+        weak var sender : T?
         let event : UIControl.Event
         var downstream : S?
-        init(downstream: S, sender : UIControl, event : UIControl.Event) {
+        init(downstream: S, sender : T, event : UIControl.Event) {
             self.downstream = downstream
             self.sender = sender
             self.event = event
@@ -51,3 +53,4 @@ struct ControlPublisher : Publisher {
         }
     }
 }
+
