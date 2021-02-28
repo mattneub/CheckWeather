@@ -29,11 +29,13 @@ final class ZipEntryViewController: UIViewController {
         self.processor = ZipEntryProcessor(coordinator: coordinator, viewController: self)
         // we listen to interface and signal changes for processor
         self.textField.publisher(for: .editingChanged)
-            .map { .userChangedZip(($0 as! UITextField).text!) }
+            .compactMap { $0 as? UITextField }
+            .map { .userChangedZip($0.text ?? "") }
             .subscribe(self.interfaceEvent)
             .store(in: &self.storage)
         self.textField.publisher(for: .editingDidEndOnExit)
-            .map { .userSubmittedZip(($0 as! UITextField).text!) }
+            .compactMap { $0 as? UITextField }
+            .map { .userSubmittedZip($0.text ?? "") }
             .subscribe(self.interfaceEvent)
             .store(in: &self.storage)
         self.okButton.publisher()
