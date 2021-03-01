@@ -16,7 +16,7 @@ struct ControlPublisher<T:UIControl> : Publisher {
     typealias Failure = Never
     unowned let control : T
     let event : UIControl.Event
-    init(control:T, for event:UIControl.Event) {
+    init(control:T, for event:UIControl.Event = .primaryActionTriggered) {
         self.control = control
         self.event = event
     }
